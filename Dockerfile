@@ -24,7 +24,6 @@ RUN apt-get update -qq \
     tinytex \
     remotes  \
     tidyverse \  
-    kable \
     kableExtra \
   #&& tlmgr update --self \
   #&& tlmgr install framed xcolor metafont mfware inconsolata tex ae parskip listings \
