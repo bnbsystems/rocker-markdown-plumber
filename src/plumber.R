@@ -14,7 +14,7 @@ list()
 
 
 #* @serializer contentType list(type="application/pdf")
-#* @description Generates pdf
+#* @description Gets PDF
 #* @param stamp The stamp of generation (id and date time)
 #* @get /pdf
 function(stamp){
@@ -26,7 +26,7 @@ function(stamp){
 
 
 #* @serializer contentType list(type="application/pdf")
-#* @description Generates pdf
+#* @description Generates PDF
 #* @post /pdf
 function(req){
   params = jsonlite::fromJSON(req$postBody)
@@ -43,9 +43,14 @@ function(req){
 }
 
 
-#* @del /pdf 
+#* @delete /pdf 
 function() {
   dir_to_remove <- list.dirs(recursive = FALSE) 
   unlink(dir_to_remove, recursive = TRUE, force = TRUE)
   return(dir_to_remove)
+}
+
+#* @head /test 
+function() {
+  return("OK")
 }
