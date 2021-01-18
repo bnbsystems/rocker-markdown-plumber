@@ -1,0 +1,16 @@
+---
+title: Quarterly report
+output: pdf_document
+author: BnB Systems
+params:
+  id: NA
+---
+ 
+```{r, include=FALSE}
+options(tinytex.verbose = TRUE)
+#update.packages(ask = FALSE, checkBuilt = TRUE)
+tinytex::tlmgr_update()
+```
+
+
+`r params$id`
