@@ -2,6 +2,8 @@ FROM rstudio/plumber
 MAINTAINER BnB Systems
 LABEL maintainer="BnB Systems"
 
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
 RUN apt-get update -qq \
   && apt-get -y --no-install-recommends install \
     libxml2-dev \

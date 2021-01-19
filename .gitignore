@@ -68,3 +68,7 @@ vignettes/*.pdf
 # Ignore all local history of files
 .history
 .ionide
+
+
+# python
+__pycache__
