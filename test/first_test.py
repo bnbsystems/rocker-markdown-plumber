@@ -15,3 +15,9 @@ def test_r_version(host):
     version = host.run("Rscript --version 2>&1").stdout
     print(version)
     assert "4.0.3" in version
+
+def test_os_user(host):
+    hosts = host.file("/etc/hosts")
+    print(hosts)
+    assert hosts.user == "root"
+    
