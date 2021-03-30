@@ -72,3 +72,7 @@ vignettes/*.pdf
 
 # python
 __pycache__
+
+
+# junit format file output 
+result.xml

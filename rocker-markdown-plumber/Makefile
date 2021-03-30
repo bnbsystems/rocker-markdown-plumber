@@ -1,7 +1,7 @@
 TAG ?= latest
 DOCKER_IMAGE ?= bnbsystems/rocker-markdown-plumber
 
-.PHONY: all build push
+.PHONY: all build test push 
 
 build:
 	docker build --network=host --no-cache -t $(DOCKER_IMAGE):dockerfile . 2>&1 | tee "${DOCKER_IMAGE}_$(date +%Y%m%d%H%M%S).log"
