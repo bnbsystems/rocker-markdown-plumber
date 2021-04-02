@@ -17,20 +17,27 @@ list()
 
 #* @serializer contentType list(type="application/pdf")
 #* @description Gets PDF
-#* @param stamp The stamp of generation (id and date time)
+#* @param id The id of generation (id)
 #* @get /pdf
-function(stamp){
-  output_file <- 
-  output_file <- paste0(stamp, ".pdf")
-  output_filePath <- file.path(stamp,output_file)
-  readBin(output_filePath, "raw", n=file.info(output_filePath)$size)
+function(id, res){
+  output_file <- paste0(id, ".pdf")
+  output_filePath <- file.path(id,output_file)
+  if (path.exists(output_filePath)){
+    readBin(output_filePath, "raw", n=file.info(output_filePath)$size)
+  }
+  else{
+    res$status <- 404
+    return(list(error="Not Found"))
+  }
 }
+
 
 
 #* @serializer contentType list(type="application/pdf")
 #* @description Generates PDF
 #* @post /pdf
 function(req){
+
   params = jsonlite::fromJSON(req$postBody)
 
   dateTime <- format(Sys.time(), "%Y%m%d_%H%M%S")

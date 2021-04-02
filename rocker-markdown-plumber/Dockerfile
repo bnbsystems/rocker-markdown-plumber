@@ -27,6 +27,14 @@ RUN apt-get update -qq \
     remotes  \
     tidyverse \  
     kableExtra \
+    stargazer \
+    pander \
+    rhandsontable \
+    gridExtra \
+    data.table \
+    plotly \
+    reshape2 \
+    RCurl \
   #&& tlmgr update --self \
   #&& tlmgr install framed xcolor metafont mfware inconsolata tex ae parskip listings \
   ## clean up
