@@ -8,6 +8,9 @@ params:
  
 ```{r, include=FALSE}
 options(tinytex.verbose = TRUE)
+options(Encoding="UTF-8")
+options(max.print=100)
+options(scipen=10)
 #update.packages(ask = FALSE, checkBuilt = TRUE)
 tinytex::tlmgr_update()
 ```
