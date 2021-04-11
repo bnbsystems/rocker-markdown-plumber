@@ -76,3 +76,9 @@ __pycache__
 
 # junit format file output 
 result.xml
+
+*.log
+*.aux
+start
+done
+*.tex

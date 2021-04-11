@@ -1,7 +1,9 @@
 #* @apiTitle Plumber API for generating PDFs
 
+library(plumber)
 library(stringr)
-options(scipen = 999, tinytex.verbose = TRUE, Encoding="UTF-8", max.print=100))
+library(yaml)
+options(scipen = 999, tinytex.verbose = TRUE, Encoding="UTF-8", max.print=100)
 knitr::opts_chunk$set(echo = F,message=F,warning=F,cache = F)
 file_name <- paste0('unsigned', ".pdf")
 
@@ -9,9 +11,9 @@ file_name <- paste0('unsigned', ".pdf")
 #* Print to log
 #* @filter logger
 logger = function(req){
-  cat("\n", as.character(Sys.time()), 
-      "\n", req$REQUEST_METHOD, req$PATH_INFO, 
-      "\n", req$HTTP_USER_AGENT, "@", req$REMOTE_ADDR)
+  #cat("\n", as.character(Sys.time()), 
+  #    "\n", req$REQUEST_METHOD, req$PATH_INFO, 
+  #    "\n", req$HTTP_USER_AGENT, "@", req$REMOTE_ADDR)
   plumber::forward()
 }
 
@@ -43,17 +45,24 @@ function(id, res){
 #* @description Gets metadata for rmarkdown
 #* @get /meta
 function(res){
-  y <- yaml.load("rmarkdown.yaml")
+  y <- yaml.load_file("rmarkdown.yaml")
   return (y)
 }
 
 
-
 #* @serializer contentType list(type="application/pdf")
 #* @description Generates PDF
+#* @param id The id of generation (id)
 #* @post /pdf
-function(req){
-
+#* @parser json
+#* @preempt logger
+function(id, req, res){
+  print(req$postBody)
+  if(is.null(req$postBody) | req$postBody==""){
+    res$status <- 400
+    return(list(error="Bad Request"))
+  }
+  
   params = jsonlite::fromJSON(req$postBody)
   output_dir <- file.path(".",id)
   output_file_path <- file.path(output_dir, file_name)
