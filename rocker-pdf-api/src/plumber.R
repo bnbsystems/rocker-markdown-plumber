@@ -1,5 +1,11 @@
 #* @apiTitle Plumber API for generating PDFs
 
+library(stringr)
+options(scipen = 999, tinytex.verbose = TRUE, Encoding="UTF-8", max.print=100))
+knitr::opts_chunk$set(echo = F,message=F,warning=F,cache = F)
+file_name <- paste0('unsigned', ".pdf")
+
+
 #* Print to log
 #* @filter logger
 logger = function(req){
@@ -15,20 +21,30 @@ logger = function(req){
 list()
 
 
+
+
 #* @serializer contentType list(type="application/pdf")
 #* @description Gets PDF
 #* @param id The id of generation (id)
 #* @get /pdf
 function(id, res){
-  output_file <- paste0(id, ".pdf")
-  output_filePath <- file.path(id,output_file)
-  if (path.exists(output_filePath)){
-    readBin(output_filePath, "raw", n=file.info(output_filePath)$size)
+  output_dir <- file.path(".",id)
+  output_file_path <- file.path(output_dir, file_name)
+  if (path.exists(output_file_path)){
+    readBin(output_file_path, "raw", n=file.info(output_file_path)$size)
   }
   else{
     res$status <- 404
     return(list(error="Not Found"))
   }
+}
+
+
+#* @description Gets metadata for rmarkdown
+#* @get /meta
+function(res){
+  y <- yaml.load("rmarkdown.yaml")
+  return (y)
 }
 
 
@@ -39,24 +55,37 @@ function(id, res){
 function(req){
 
   params = jsonlite::fromJSON(req$postBody)
-
-  dateTime <- format(Sys.time(), "%Y%m%d_%H%M%S")
-  stamp <- paste(params$id, dateTime, sep="_")
-  output_file <- paste0(stamp, ".pdf")
-
-  rmarkdown::render("rmarkdown.Rmd", output_dir=stamp, output_format="pdf_document", output_file=output_file,
+  output_dir <- file.path(".",id)
+  output_file_path <- file.path(output_dir, file_name)
+  
+  file.create(file.path(output_dir, "start"))
+  rmarkdown::render("rmarkdown.Rmd", output_dir=output_dir, output_format="pdf_document", output_file=file_name,
          params = params, envir = new.env())
-
-  output_filePath <- file.path(stamp,output_file)
-  readBin(output_filePath, "raw", n=file.info(output_filePath)$size)
+  
+  file.create(file.path(output_dir, "done"))
+  
+  readBin(output_file_path, "raw", n=file.info(output_file_path)$size)
 }
 
 
-#* @delete /pdf 
-function() {
-  dir_to_remove <- list.dirs(recursive = FALSE) 
-  unlink(dir_to_remove, recursive = TRUE, force = TRUE)
-  return(dir_to_remove)
+#* @description will remove old working folder 
+#* @delete /pdf
+#* @param numberOfHours After number of hours, old generation will be removed 
+function(numberOfHours) {
+  dirs_to_check <- list.dirs( recursive = FALSE)
+  removed_dirs <- c()
+  for (dir_to_check in dirs_to_check) {
+    if(str_starts(dir_to_check, ".", negate = TRUE))
+    {
+      
+      gen_start <- file.mtime(file.path(dir_to_check, "start"))
+      if(difftime(Sys.time(), gen_start,  units = "hours") > numberOfDays) {
+        unlink(dir_to_check, recursive = TRUE, force = TRUE)
+        removed_dirs <- c(removed_dirs, dir_to_check)
+      }
+    }
+  }
+  return(removed_dirs)
 }
 
 #* @head /test 
