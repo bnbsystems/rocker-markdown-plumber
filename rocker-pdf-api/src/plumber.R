@@ -3,9 +3,12 @@
 library(plumber)
 library(stringr)
 library(yaml)
-options(scipen = 999, tinytex.verbose = TRUE, Encoding="UTF-8", max.print=100)
+options(scipen = 999, tinytex.verbose = TRUE, Encoding="UTF-8", max.print=100, verbose=TRUE, 
+show.error.locations=TRUE, show.error.messages=TRUE, verbose=TRUE, 
+warnPartialMatchArgs=TRUE, warnPartialMatchAttr=TRUE,  warnPartialMatchDollar=TRUE,
+internet.info=0 )
 knitr::opts_chunk$set(echo = F,message=F,warning=F,cache = F)
-file_name <- paste0('unsigned', ".pdf")
+file_name <- "unsigned.pdf"
 
 
 #* Print to log
@@ -32,7 +35,7 @@ list()
 function(id, res){
   output_dir <- file.path(".",id)
   output_file_path <- file.path(output_dir, file_name)
-  if (path.exists(output_file_path)){
+  if (dir.exists(output_dir) & file.exists(output_file_path)){
     readBin(output_file_path, "raw", n=file.info(output_file_path)$size)
   }
   else{
@@ -57,7 +60,6 @@ function(res){
 #* @parser json
 #* @preempt logger
 function(id, req, res){
-  print(req$postBody)
   if(is.null(req$postBody) | req$postBody==""){
     res$status <- 400
     return(list(error="Bad Request"))
@@ -67,7 +69,11 @@ function(id, req, res){
   output_dir <- file.path(".",id)
   output_file_path <- file.path(output_dir, file_name)
   
-  file.create(file.path(output_dir, "start"))
+  output_file_start <- file.path(output_dir, "start")
+  if(!file.exists(output_file_start)) {
+    file.create(output_file_start)
+  }
+  
   rmarkdown::render("rmarkdown.Rmd", output_dir=output_dir, output_format="pdf_document", output_file=file_name,
          params = params, envir = new.env())
   
@@ -81,14 +87,13 @@ function(id, req, res){
 #* @delete /pdf
 #* @param numberOfHours After number of hours, old generation will be removed 
 function(numberOfHours) {
-  dirs_to_check <- list.dirs( recursive = FALSE)
+  dirs_to_check <- list.dirs( recursive = FALSE, full.names = FALSE)
   removed_dirs <- c()
   for (dir_to_check in dirs_to_check) {
-    if(str_starts(dir_to_check, ".", negate = TRUE))
+    if(str_starts(dir_to_check, "\\.", negate = TRUE) & dir_to_check != "")
     {
-      
       gen_start <- file.mtime(file.path(dir_to_check, "start"))
-      if(difftime(Sys.time(), gen_start,  units = "hours") > numberOfDays) {
+      if(difftime(Sys.time(), gen_start,  units = "hours") > numberOfHours) {
         unlink(dir_to_check, recursive = TRUE, force = TRUE)
         removed_dirs <- c(removed_dirs, dir_to_check)
       }
@@ -97,7 +102,7 @@ function(numberOfHours) {
   return(removed_dirs)
 }
 
-#* @head /test 
+#* @head /ping 
 function() {
   return("OK")
 }

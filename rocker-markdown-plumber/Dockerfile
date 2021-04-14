@@ -19,6 +19,7 @@ RUN apt-get update -qq \
     pandoc-citeproc \
     lmodern \
     texlive-latex-extra \
+    wget \
   && update-ca-certificates --fresh \
   && install2.r --error --deps TRUE \
     rmarkdown \
@@ -35,8 +36,6 @@ RUN apt-get update -qq \
     plotly \
     reshape2 \
     RCurl \
-  #&& tlmgr update --self \
-  #&& tlmgr install framed xcolor metafont mfware inconsolata tex ae parskip listings \
   ## clean up
   && apt-get autoremove -y \
   && apt-get clean \
