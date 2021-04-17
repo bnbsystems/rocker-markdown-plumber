@@ -19,7 +19,9 @@ RUN apt-get update -qq \
     pandoc-citeproc \
     lmodern \
     texlive-latex-extra \
+    texlive-xetex \
     wget \
+    nano \
   && update-ca-certificates --fresh \
   && install2.r --error --deps TRUE \
     rmarkdown \
@@ -36,6 +38,7 @@ RUN apt-get update -qq \
     plotly \
     reshape2 \
     RCurl \
+    pander \
   ## clean up
   && apt-get autoremove -y \
   && apt-get clean \

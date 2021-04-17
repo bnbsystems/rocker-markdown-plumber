@@ -26,6 +26,12 @@ logger = function(req){
 list()
 
 
+#* @description get all generations
+#* @get /generations
+function(){
+  ld <- list.dirs( recursive = FALSE, full.names = FALSE)
+  ld[!startsWith(ld, ".")]
+}
 
 
 #* @serializer contentType list(type="application/pdf")
