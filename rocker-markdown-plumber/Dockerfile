@@ -1,5 +1,5 @@
 FROM rstudio/plumber 
-MAINTAINER BnB Systems
+LABEL org.opencontainers.image.authors="BnB Systems"
 LABEL maintainer="BnB Systems"
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -28,7 +28,7 @@ RUN apt-get update -qq \
     knitr \
     tinytex \
     remotes  \
-    tidyverse \  
+    tidyverse \
     kableExtra \
     stargazer \
     pander \
