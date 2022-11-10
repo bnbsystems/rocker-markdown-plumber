@@ -1,4 +1,4 @@
-FROM rstudio/plumber 
+FROM rstudio/plumber:v1.2.0
 MAINTAINER BnB Systems
 LABEL maintainer="BnB Systems"
 
