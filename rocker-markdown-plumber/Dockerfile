@@ -1,5 +1,5 @@
-FROM rstudio/plumber 
-LABEL org.opencontainers.image.authors="BnB Systems"
+FROM rstudio/plumber:v1.2.0
+MAINTAINER BnB Systems
 LABEL maintainer="BnB Systems"
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
