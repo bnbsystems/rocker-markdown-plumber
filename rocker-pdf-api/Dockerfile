@@ -24,14 +24,17 @@ RUN apt-get update -qq \
   libgs-dev \
   imagemagick \
   pdftk \
-  pdfjam \
   texlive-extra-utils \
+  texlive-plain-generic \
+  texlive-latex-base \
+  && echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | debconf-set-selections  \
+  && apt-get install -y ttf-mscorefonts-installer \
   ## clean up
   && apt-get autoremove -y \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
-RUN tlmgr install pdfcrop
+#RUN tlmgr install pdfcrop
 
 
 
