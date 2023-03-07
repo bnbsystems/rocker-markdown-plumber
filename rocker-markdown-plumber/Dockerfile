@@ -28,7 +28,7 @@ RUN apt-get update -qq \
     knitr \
     tinytex \
     remotes  \
-    tidyverse \  
+    tidyverse \
     kableExtra \
     stargazer \
     pander \
