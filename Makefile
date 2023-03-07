@@ -1,5 +1,5 @@
-TAG ?= latest
 DOCKER_IMAGE ?= bnbsystems/rocker-markdown-plumber
+TAG := $(shell cat ./tag.txt)
 
 .PHONY: all build test push
 
